@@ -1,0 +1,18 @@
+# System files
+.DS_Store
+.htaccess
+
+# Miscellaneous
+/*.php
+/*.html
+/*.txt
+/*.sh
+/favicon.ico
+/mage
+/downloader/
+/errors/*
+/includes/
+/lib/*
+/pkginfo/
+/shell/
+/var/
