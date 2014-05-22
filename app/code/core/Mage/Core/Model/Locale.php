@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Core
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -411,13 +411,14 @@ class Mage_Core_Model_Locale
 
     /**
      * Retrieve ISO date format
+     * and filter for 2 digit year format, it must be 4 digits
      *
      * @param   string $type
      * @return  string
      */
     public function getDateFormat($type=null)
     {
-        return $this->getTranslation($type, 'date');
+        return preg_replace('/(?<!y)yy(?!y)/', 'yyyy', $this->getTranslation($type, 'date'));
     }
 
     /**
@@ -430,7 +431,6 @@ class Mage_Core_Model_Locale
         return preg_replace('/(?<!y)yy(?!y)/', 'yyyy',
             $this->getTranslation(Mage_Core_Model_Locale::FORMAT_TYPE_SHORT, 'date'));
     }
-
 
     /**
      * Retrieve ISO time format
@@ -511,12 +511,13 @@ class Mage_Core_Model_Locale
      * @param   mixed $store Information about store
      * @param   string|integer|Zend_Date|array|null $date date in UTC
      * @param   boolean $includeTime flag for including time to date
+     * @param   string|null $format
      * @return  Zend_Date
      */
-    public function storeDate($store=null, $date=null, $includeTime=false)
+    public function storeDate($store=null, $date=null, $includeTime=false, $format = null)
     {
         $timezone = Mage::app()->getStore($store)->getConfig(self::XML_PATH_DEFAULT_TIMEZONE);
-        $date = new Zend_Date($date, null, $this->getLocale());
+        $date = new Zend_Date($date, $format, $this->getLocale());
         $date->setTimezone($timezone);
         if (!$includeTime) {
             $date->setHour(0)
@@ -576,7 +577,15 @@ class Mage_Core_Model_Locale
             try {
                 $currencyObject = new Zend_Currency($currency, $this->getLocale());
             } catch (Exception $e) {
-                $currencyObject = new Zend_Currency($this->getCurrency(), $this->getLocale());
+                /**
+                 * catch specific exceptions like "Currency 'USD' not found"
+                 * - back end falls with specific locals as Malaysia and etc.
+                 *
+                 * as we can see from Zend framework ticket
+                 * http://framework.zend.com/issues/browse/ZF-10038
+                 * zend team is not going to change it behaviour in the near time
+                 */
+                $currencyObject = new Zend_Currency($currency);
                 $options['name'] = $currency;
                 $options['currency'] = $currency;
                 $options['symbol'] = $currency;
@@ -753,7 +762,18 @@ class Mage_Core_Model_Locale
         return $this->getLocale()->getTranslation($value, $path, $this->getLocale());
     }
 
-/**
+    /**
+     * Replace all yy date format to yyyy
+     *
+     * @param $currentFormat
+     * @return mixed
+     */
+    protected function _convertYearTwoDigitTo4($currentFormat)
+    {
+        return preg_replace('/(\byy\b)/', 'yyyy', $currentFormat);
+    }
+
+    /**
      * Returns the localized country name
      *
      * @param  string             $value  Name to get detailed information about

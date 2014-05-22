@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Usa
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -133,8 +133,8 @@ class Mage_Usa_Model_Shipping_Carrier_Fedex
     {
         $client = new SoapClient($wsdl, array('trace' => $trace));
         $client->__setLocation($this->getConfigFlag('sandbox_mode')
-            ? 'https://wsbeta.fedex.com:443/web-services/rate'
-            : 'https://ws.fedex.com:443/web-services/rate'
+            ? 'https://wsbeta.fedex.com:443/web-services '
+            : 'https://ws.fedex.com:443/web-services'
         );
 
         return $client;
@@ -1360,7 +1360,10 @@ class Mage_Usa_Model_Shipping_Carrier_Fedex
                         'PhoneNumber' => $request->getShipperContactPhoneNumber()
                     ),
                     'Address' => array(
-                        'StreetLines' => array($request->getShipperAddressStreet()),
+                        'StreetLines' => array(
+                            $request->getShipperAddressStreet1(),
+                            $request->getShipperAddressStreet2()
+                        ),
                         'City' => $request->getShipperAddressCity(),
                         'StateOrProvinceCode' => $request->getShipperAddressStateOrProvinceCode(),
                         'PostalCode' => $request->getShipperAddressPostalCode(),
@@ -1374,7 +1377,10 @@ class Mage_Usa_Model_Shipping_Carrier_Fedex
                         'PhoneNumber' => $request->getRecipientContactPhoneNumber()
                     ),
                     'Address' => array(
-                        'StreetLines' => array($request->getRecipientAddressStreet()),
+                        'StreetLines' => array(
+                            $request->getRecipientAddressStreet1(),
+                            $request->getRecipientAddressStreet2()
+                        ),
                         'City' => $request->getRecipientAddressCity(),
                         'StateOrProvinceCode' => $request->getRecipientAddressStateOrProvinceCode(),
                         'PostalCode' => $request->getRecipientAddressPostalCode(),

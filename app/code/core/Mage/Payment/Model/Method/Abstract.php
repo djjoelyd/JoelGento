@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Payment
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -68,6 +68,7 @@ abstract class Mage_Payment_Model_Method_Abstract extends Varien_Object
     protected $_canAuthorize                = false;
     protected $_canCapture                  = false;
     protected $_canCapturePartial           = false;
+    protected $_canCaptureOnce              = false;
     protected $_canRefund                   = false;
     protected $_canRefundInvoicePartial     = false;
     protected $_canVoid                     = false;
@@ -136,6 +137,16 @@ abstract class Mage_Payment_Model_Method_Abstract extends Varien_Object
     public function canCapturePartial()
     {
         return $this->_canCapturePartial;
+    }
+
+    /**
+     * Check whether capture can be performed once and no further capture possible
+     *
+     * @return bool
+     */
+    public function canCaptureOnce()
+    {
+        return $this->_canCaptureOnce;
     }
 
     /**

@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Adminhtml
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -283,6 +283,10 @@ class Mage_Adminhtml_Model_Sales_Order_Create extends Varien_Object implements M
         }
 
         $this->getSession()->setStoreId($order->getStoreId());
+
+        //Notify other modules about the session quote
+        Mage::dispatchEvent('init_from_order_session_quote_initialized',
+                array('session_quote' => $this->getSession()));
 
         /**
          * Initialize catalog rule data with new session values

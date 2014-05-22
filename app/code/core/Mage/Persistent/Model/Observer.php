@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Persistent
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -331,7 +331,7 @@ class Mage_Persistent_Model_Observer
     }
 
     /**
-     * Prevent express checkout with Google checkout and PayPal Express checkout
+     * Prevent express checkout with PayPal Express checkout
      *
      * @param Varien_Event_Observer $observer
      */
@@ -348,9 +348,7 @@ class Mage_Persistent_Model_Observer
                 Mage::helper('persistent')->__('To proceed to Checkout, please log in using your email address.')
             );
             $controllerAction->redirectLogin();
-            if ($controllerAction instanceof Mage_GoogleCheckout_RedirectController
-                || $controllerAction instanceof Mage_Paypal_Controller_Express_Abstract
-            ) {
+            if ($controllerAction instanceof Mage_Paypal_Controller_Express_Abstract) {
                 Mage::getSingleton('customer/session')
                     ->setBeforeAuthUrl(Mage::getUrl('persistent/index/expressCheckout'));
             }

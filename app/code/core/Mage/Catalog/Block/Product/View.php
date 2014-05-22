@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Catalog
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -141,7 +141,7 @@ class Mage_Catalog_Block_Product_View extends Mage_Catalog_Block_Product_Abstrac
             return Mage::helper('core')->jsonEncode($config);
         }
 
-        $_request = Mage::getSingleton('tax/calculation')->getRateRequest(false, false, false);
+        $_request = Mage::getSingleton('tax/calculation')->getDefaultRateRequest();
         /* @var $product Mage_Catalog_Model_Product */
         $product = $this->getProduct();
         $_request->setProductClassId($product->getTaxClassId());
@@ -153,15 +153,24 @@ class Mage_Catalog_Block_Product_View extends Mage_Catalog_Block_Product_Abstrac
 
         $_regularPrice = $product->getPrice();
         $_finalPrice = $product->getFinalPrice();
-        $_priceInclTax = Mage::helper('tax')->getPrice($product, $_finalPrice, true);
-        $_priceExclTax = Mage::helper('tax')->getPrice($product, $_finalPrice);
+        if ($product->getTypeId() == Mage_Catalog_Model_Product_Type::TYPE_BUNDLE) {
+            $_priceInclTax = Mage::helper('tax')->getPrice($product, $_finalPrice, true,
+                null, null, null, null, null, false);
+            $_priceExclTax = Mage::helper('tax')->getPrice($product, $_finalPrice, false,
+                null, null, null, null, null, false);
+        } else {
+            $_priceInclTax = Mage::helper('tax')->getPrice($product, $_finalPrice, true);
+            $_priceExclTax = Mage::helper('tax')->getPrice($product, $_finalPrice);
+        }
         $_tierPrices = array();
         $_tierPricesInclTax = array();
         foreach ($product->getTierPrice() as $tierPrice) {
-            $_tierPrices[] = Mage::helper('core')->currency($tierPrice['website_price'], false, false);
+            $_tierPrices[] = Mage::helper('core')->currency(
+                Mage::helper('tax')->getPrice($product, (float)$tierPrice['website_price'], false) - $_priceExclTax
+                    , false, false);
             $_tierPricesInclTax[] = Mage::helper('core')->currency(
-                Mage::helper('tax')->getPrice($product, (int)$tierPrice['website_price'], true),
-                false, false);
+                Mage::helper('tax')->getPrice($product, (float)$tierPrice['website_price'], true) - $_priceInclTax
+                    , false, false);
         }
         $config = array(
             'productId'           => $product->getId(),

@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Wishlist
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -367,7 +367,7 @@ class Mage_Wishlist_Helper_Data extends Mage_Core_Helper_Abstract
     }
 
     /**
-     * Retrieve URL for adding item to shoping cart
+     * Retrieve URL for adding item to shopping cart
      *
      * @param string|Mage_Catalog_Model_Product|Mage_Wishlist_Model_Item $item
      * @return  string

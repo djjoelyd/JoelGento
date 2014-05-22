@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Adminhtml
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -204,17 +204,11 @@ class Mage_Adminhtml_Block_Sales_Order_Create_Items_Grid extends Mage_Adminhtml_
     {
         $address = $this->getQuoteAddress();
         if ($this->displayTotalsIncludeTax()) {
-            if ($this->getIsPriceInclTax()) {
-                return $address->getSubtotalInclTax() + $this->getDiscountAmount();
-            } else {
-                return $address->getSubtotal() + $address->getTaxAmount() + $this->getDiscountAmount();
-            }
+            $subtotalInclTax = $address->getSubtotal() + $address->getTaxAmount()
+                    + $address->getHiddenTaxAmount() + $this->getDiscountAmount();
+            return $subtotalInclTax;
         } else {
-            if ($this->getIsPriceInclTax()) {
-                return $address->getSubtotalInclTax() - $address->getTaxAmount() + $this->getDiscountAmount();
-            } else {
-                return $address->getSubtotal() + $this->getDiscountAmount();
-            }
+            return $address->getSubtotal() + $this->getDiscountAmount();
         }
     }
 

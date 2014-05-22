@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage_Directory
- * @copyright   Copyright (c) 2013 Magento Inc. (http://www.magentocommerce.com)
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -180,7 +180,7 @@ class Mage_Directory_Model_Resource_Region_Collection extends Mage_Core_Model_Re
         if (count($options) > 0) {
             array_unshift($options, array(
                 'title '=> null,
-                'value' => '0',
+                'value' => "",
                 'label' => Mage::helper('directory')->__('-- Please select --')
             ));
         }
